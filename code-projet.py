@@ -10,23 +10,22 @@ messages.Sort("[ReceivedTime]", True)
 
 # Dictionnaire mois en français
 MONTH_NAMES = {
-    1: "janvier", 2: "février", 3: "mars", 4: "avril",
-    5: "mai", 6: "juin", 7: "juillet", 8: "août",
-    9: "septembre", 10: "octobre", 11: "novembre", 12: "décembre"
+    1: "Janvier", 2: "Février", 3: "Mars", 4: "Avril",
+    5: "Mai", 6: "Juin", 7: "Juillet", 8: "Août",
+    9: "Septembre", 10: "Octobre", 11: "Novembre", 12: "Décembre"
 }
 
 def safe_name(name):
     """Remplace les caractères invalides pour le nom de dossier."""
-    return name.replace(":", "-").replace("/", "-").replace("\\", "-")
+    return name.replace(":", "-").replace("/", "-").replace("\\", "-").strip()
 
 def extract_project_code(text):
     """
-    Extrait un code projet au format T###-XXXX-... depuis le sujet ou le corps.
-    Exemple : T1112-BTOC-IFOP-QPV
+    Extrait un code projet comme :
+    T1054 - BTOB - IPSOS - ADEME ou T1112-BTOC-IFOP-QPV
     """
-    match = re.search(r"T\d{3,5}-[A-Z0-9\-]+", text)
-    return match.group(0) if match else None
-
+    match = re.search(r"T\d{3,5}(?:\s*-\s*[A-Z0-9]+)+", text)
+    return match.group(0).replace(" ", "") if match else None  # Supprime les espaces autour des tirets
 
 def get_or_create_folder(parent, folder_name):
     """Retourne le sous-dossier existant ou le crée s’il n’existe pas."""
